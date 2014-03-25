@@ -9,5 +9,7 @@ namespace Microsoft.AspNet.Mvc
         public abstract Task Invoke(AuthorizationFilterContext context, Func<Task> next);
 
         public int Order { get; set; }
+
+        public bool IsPreambleFilter { get; set; }
     }
 }

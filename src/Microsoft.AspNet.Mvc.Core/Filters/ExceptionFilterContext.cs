@@ -1,22 +1,42 @@
 ﻿using System;
+using Microsoft.AspNet.Mvc.Filters;
 
 namespace Microsoft.AspNet.Mvc
 {
-    // TODO: For now we have not implemented the ExceptionFilter pipeline, leaving this in until we decide if we are going
-    // down this path or implementing an ExceptionFilterAttribute being all three filter types with a higher scope.
-    public class ExceptionFilterContext
+    public class ExceptionFilterContext : FilterContext
     {
-        public ExceptionFilterContext(ActionContext actionContext, Exception exception)
+        public ExceptionFilterContext([NotNull] AuthorizationFilterContext context, 
+                                      [NotNull] Exception exception) 
+            : base(context.ActionContext, context.FilterItems)
         {
-            ActionContext = actionContext;
+            AuthorizationFilterContext = context;
             Exception = exception;
         }
 
-        // TODO: Should we let the exception mutate in the pipeline. MVC lets you do that.
-        public virtual Exception Exception { get; set; }
+        public ExceptionFilterContext([NotNull] ActionFilterContext context,
+                                      [NotNull] Exception exception)
+            : base(context.ActionContext, context.FilterItems)
+        {
+            ActionFilterContext = context;
+            Exception = exception;
+        }
 
-        public virtual ActionContext ActionContext { get; private set; }
+        public ExceptionFilterContext([NotNull] ActionResultFilterContext context,
+                                      [NotNull] Exception exception)
+            : base(context.ActionContext, context.FilterItems)
+        {
+            ActionResultFilterContext = context;
+            Exception = exception;
+        }
 
-        public virtual IActionResult Result { get; set; }
+        public AuthorizationFilterContext AuthorizationFilterContext { get; private set; }
+
+        public ActionFilterContext ActionFilterContext { get; private set; }
+
+        public ActionResultFilterContext ActionResultFilterContext { get; private set; }
+
+        public Exception Exception { get; private set; }
+
+        public bool ExceptionHandled { get; set; }
     }
 }

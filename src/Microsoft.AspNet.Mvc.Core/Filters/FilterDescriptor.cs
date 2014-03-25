@@ -12,6 +12,7 @@
             if (orderedFilter != null)
             {
                 Order = orderedFilter.Order;
+                IsPreambleFilter = orderedFilter.IsPreambleFilter;
             }
         }
 
@@ -20,5 +21,7 @@
         public int Order { get; private set; }
 
         public int Scope { get; private set; }
+
+        public bool IsPreambleFilter { get; private set; }
     }
 }

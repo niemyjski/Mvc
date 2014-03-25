@@ -3,5 +3,7 @@
     public interface IOrderedFilter : IFilter
     {
         int Order { get; }
+
+        bool IsPreambleFilter { get; }
     }
 }

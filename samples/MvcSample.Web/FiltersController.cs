@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using System;
+using Microsoft.AspNet.Mvc;
 using MvcSample.Web.Filters;
 using MvcSample.Web.Models;
 
@@ -11,6 +12,7 @@ namespace MvcSample.Web
     [InspectResultPage]
     [BlockAnonymous]
     [UserNameProvider(Order = -1)]
+    [MyExceptionFilter(StatusCode = 405)]
     public class FiltersController : Controller
     {
         private readonly User _user = new User() { Name = "User Name", Address = "Home Address" };
@@ -34,6 +36,13 @@ namespace MvcSample.Web
         public IActionResult Blocked(int age, string userName)
         {
             return Index(age, userName);
+        }
+
+        [MyExceptionFilter(StatusCode = 418)]
+        [AllowAnonymous]
+        public IActionResult ThrowsException()
+        {
+            throw new Exception("Woof");
         }
     }
 }
