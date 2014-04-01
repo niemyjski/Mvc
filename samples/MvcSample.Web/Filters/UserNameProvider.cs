@@ -4,12 +4,22 @@ using Microsoft.AspNet.Mvc;
 
 namespace MvcSample.Web.Filters
 {
-    public class UserNameProvider : ActionFilterAttribute
+    public class UserNameProvider : IActionFilter, IOrderedFilter
     {
-        private static readonly string[] _userNames = new[] { "Jon", "David", "Goliath" };
+        private readonly string[] _userNames;
         private static int _index;
 
-        public override async Task Invoke(ActionFilterContext context, Func<Task> next)
+        public UserNameProvider()
+            : this(new [] { "Jon", "David", "Goliath" })
+        {
+        }
+
+        public UserNameProvider(string[] userNames)
+        {
+            _userNames = userNames;
+        }
+
+        public async Task Invoke(ActionFilterContext context, Func<Task> next)
         {
             object originalUserName = null;
 
@@ -19,10 +29,16 @@ namespace MvcSample.Web.Filters
 
             if (string.IsNullOrWhiteSpace(userName))
             {
-                context.ActionArguments["userName"] = _userNames[(_index++)%3];
+                context.ActionArguments["userName"] = _userNames[(_index++) % 3];
             }
 
             await next();
+        }
+
+        public int Order
+        {
+            get;
+            set;
         }
     }
 }

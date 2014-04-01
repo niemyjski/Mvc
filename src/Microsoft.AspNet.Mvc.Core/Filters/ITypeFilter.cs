@@ -5,5 +5,6 @@ namespace Microsoft.AspNet.Mvc
     public interface ITypeFilter : IFilter
     {
         Type ImplementationType { get; }
+        object[] parameters { get; }
     }
 }

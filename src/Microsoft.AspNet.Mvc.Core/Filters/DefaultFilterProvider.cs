@@ -6,17 +6,19 @@ namespace Microsoft.AspNet.Mvc.Filters
 {
     public class DefaultFilterProvider : INestedProvider<FilterProviderContext>
     {
-        public DefaultFilterProvider(IServiceProvider serviceProvider)
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ITypeActivator _typeActivator;
+
+        public DefaultFilterProvider(IServiceProvider serviceProvider, ITypeActivator typeActivator)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
+            _typeActivator = typeActivator;
         }
 
         public int Order
         {
             get { return 0; }
         }
-
-        protected IServiceProvider ServiceProvider { get; private set; }
 
         public virtual void Invoke(FilterProviderContext context, Action callNext)
         {
@@ -46,7 +48,7 @@ namespace Microsoft.AspNet.Mvc.Filters
             var serviceFilterSignature = filter as IServiceFilter;
             if (serviceFilterSignature != null)
             {
-                var serviceFilter = ServiceProvider.GetService(serviceFilterSignature.ServiceType) as IFilter;
+                var serviceFilter = _serviceProvider.GetService(serviceFilterSignature.ServiceType) as IFilter;
 
                 if (serviceFilter == null)
                 {
@@ -70,8 +72,10 @@ namespace Microsoft.AspNet.Mvc.Filters
                         throw new InvalidOperationException("Type filter must implement IFilter");
                     }
 
-                    // TODO: Move activatorUtilities to come from the service provider.
-                    var typeFilter = ActivatorUtilities.CreateInstance(ServiceProvider, typeFilterSignature.ImplementationType) as IFilter;
+                    var typeFilter = _typeActivator.CreateInstance(
+                                         _serviceProvider,
+                                         typeFilterSignature.ImplementationType,
+                                         typeFilterSignature.parameters) as IFilter;
 
                     ApplyFilterToContainer(typeFilter, filter);
                     filterItem.Filter = typeFilter;
