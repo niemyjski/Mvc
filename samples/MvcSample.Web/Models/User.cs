@@ -2,6 +2,7 @@
 
 namespace MvcSample.Web.Models
 {
+    [DisplayColumn("Name")]
     public class User
     {
         [Required]
