@@ -398,7 +398,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         }
 
         /// <summary>
-        /// {0} has a DisplayColumn attribute for {1}, but property {1} does not have a public getter..
+        /// {0} has a DisplayColumn attribute for {1}, but property {1} does not have a public 'get' method..
         /// </summary>
         internal static string DataAnnotationsModelMetadataProvider_UnreadableProperty
         {
@@ -409,7 +409,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         }
 
         /// <summary>
-        /// {0} has a DisplayColumn attribute for {1}, but property {1} does not have a public getter..
+        /// {0} has a DisplayColumn attribute for {1}, but property {1} does not have a public 'get' method..
         /// </summary>
         internal static string FormatDataAnnotationsModelMetadataProvider_UnreadableProperty(object p0, object p1)
         {

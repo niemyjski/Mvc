@@ -64,11 +64,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 if (PrototypeCache.DisplayColumn != null &&
                     !string.IsNullOrEmpty(PrototypeCache.DisplayColumn.DisplayColumn))
                 {
-                    var displayColumnProperty = ModelType.GetProperty(PrototypeCache.DisplayColumn.DisplayColumn,
-                        BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
+                    var displayColumnProperty = ModelType.GetTypeInfo().GetDeclaredProperty(
+                                                        PrototypeCache.DisplayColumn.DisplayColumn);
                     ValidateDisplayColumnAttribute(PrototypeCache.DisplayColumn, displayColumnProperty, ModelType);
 
-                    object simpleDisplayTextValue = displayColumnProperty.GetValue(Model, new object[0]);
+                    object simpleDisplayTextValue = displayColumnProperty.GetValue(Model, null);
                     if (simpleDisplayTextValue != null)
                     {
                         return simpleDisplayTextValue.ToString();
