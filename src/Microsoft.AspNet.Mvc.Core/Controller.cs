@@ -193,10 +193,5 @@ namespace Microsoft.AspNet.Mvc
         {
             return new RedirectToRouteResult(Url, routeName, routeValues, permanent: true);
         }
-
-        public ChallengeResult Challenge()
-        {
-            return new ChallengeResult();
-        }
     }
 }
