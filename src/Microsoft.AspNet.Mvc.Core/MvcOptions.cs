@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.
+﻿// Copyright (c) Microsoft Open Technologies, Inc.
 // All Rights Reserved
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +17,24 @@
 
 namespace Microsoft.AspNet.Mvc
 {
-    public sealed class AntiForgeryConfigWrapper : IAntiForgeryConfig
+    public class MvcOptions
     {
-        public string CookieName
-        {
-            get { return AntiForgeryConfig.CookieName; }
-        }
+        private IAntiForgeryConfig _antiForgeryConfig = new AntiForgeryConfig();
 
-        public string FormFieldName
+        public virtual IAntiForgeryConfig AntiForgeryConfig
         {
-            get { return AntiForgeryConfig.AntiForgeryTokenFieldName; }
-        }
+            get
+            {
+                return _antiForgeryConfig;
+            }
 
-        public bool RequireSSL
-        {
-            get { return AntiForgeryConfig.RequireSsl; }
-        }
-
-        public bool SuppressXFrameOptionsHeader
-        {
-            get { return AntiForgeryConfig.SuppressXFrameOptionsHeader; }
+            set
+            {
+                if (value != null)
+                {
+                    _antiForgeryConfig = value;
+                }
+            }
         }
     }
 }
