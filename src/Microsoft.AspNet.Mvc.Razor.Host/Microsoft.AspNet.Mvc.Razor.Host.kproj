@@ -22,6 +22,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMvcRazorHost.cs" />
+    <Compile Include="InjectChunk.cs" />
+    <Compile Include="MvcCSharpCodeBuilder.cs" />
+    <Compile Include="MvcCSharpCodeVistor.cs" />
+    <Compile Include="InjectParameterGenerator.cs" />
     <Compile Include="MvcRazorCodeParser.cs" />
     <Compile Include="MvcRazorHost.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />

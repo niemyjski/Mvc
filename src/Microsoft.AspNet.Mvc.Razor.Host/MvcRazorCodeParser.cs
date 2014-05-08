@@ -14,6 +14,7 @@ namespace Microsoft.AspNet.Mvc.Razor
     {
         private const string GenericTypeFormat = "{0}<{1}>";
         private const string ModelKeyword = "model";
+        private const string InjectKeyword = "inject";
         private readonly string _baseType;
         private SourceLocation? _endInheritsLocation;
         private bool _modelStatementFound;
@@ -22,6 +23,7 @@ namespace Microsoft.AspNet.Mvc.Razor
         {
             _baseType = baseType;
             MapDirectives(ModelDirective, ModelKeyword);
+            MapDirectives(InjectDirective, InjectKeyword);
         }
 
         protected override void InheritsDirective()
@@ -64,6 +66,17 @@ namespace Microsoft.AspNet.Mvc.Razor
             _modelStatementFound = true;
 
             CheckForInheritsAndModelStatements();
+        }
+
+        protected virtual void InjectDirective()
+        {
+            AssertDirective(InjectKeyword);
+            AcceptAndMoveNext();
+
+            var endModelLocation = CurrentLocation;
+            BaseTypeDirective(Resources.FormatMvcRazorCodeParser_ModelKeywordMustBeFollowedByTypeName(InjectKeyword),
+                             (type) => new InjectParameterGenerator(type));
+
         }
 
         private SpanCodeGenerator CreateModelCodeGenerator(string model)

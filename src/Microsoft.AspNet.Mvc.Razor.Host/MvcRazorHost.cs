@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using Microsoft.AspNet.Razor;
 using Microsoft.AspNet.Razor.Generator;
+using Microsoft.AspNet.Razor.Generator.Compiler;
 using Microsoft.AspNet.Razor.Parser;
 
 namespace Microsoft.AspNet.Mvc.Razor
@@ -67,5 +68,11 @@ namespace Microsoft.AspNet.Mvc.Razor
         {
             return new MvcRazorCodeParser(_baseType);
         }
+
+        public override CodeBuilder DecorateCodeBuilder(CodeBuilder incomingBuilder, CodeGeneratorContext context)
+        {
+            return new MvcCSharpCodeVisitor()            
+        }
+        
     }
 }
