@@ -23,7 +23,7 @@ namespace Microsoft.AspNet.Mvc.Razor
 
         public IViewComponentHelper Component { get; private set; }
 
-        public HttpContext HttpContext
+        public HttpContext Context
         {
             get
             {
@@ -48,12 +48,12 @@ namespace Microsoft.AspNet.Mvc.Razor
         {
             get
             {
-                if (HttpContext == null)
+                if (Context == null)
                 {
                     return null;
                 }
 
-                return HttpContext.User;
+                return Context.User;
             }
         }
 
@@ -115,11 +115,11 @@ namespace Microsoft.AspNet.Mvc.Razor
         private void InitHelpers()
         {
             Contract.Assert(ViewContext != null);
-            Contract.Assert(HttpContext != null);
+            Contract.Assert(Context != null);
 
-            Url = HttpContext.RequestServices.GetService<IUrlHelper>();
+            Url = Context.RequestServices.GetService<IUrlHelper>();
 
-            Component = HttpContext.RequestServices.GetService<IViewComponentHelper>();
+            Component = Context.RequestServices.GetService<IViewComponentHelper>();
 
             var contextable = Component as ICanHasViewContext;
             if (contextable != null)
