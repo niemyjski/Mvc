@@ -71,8 +71,7 @@ namespace Microsoft.AspNet.Mvc.Razor
 
         public override CodeBuilder DecorateCodeBuilder(CodeBuilder incomingBuilder, CodeGeneratorContext context)
         {
-            return new MvcCSharpCodeVisitor()            
+            return new MvcCSharpCodeBuilder(context);
         }
-        
     }
 }

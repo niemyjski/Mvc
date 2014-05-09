@@ -15,38 +15,41 @@
 // See the Apache 2 License for the specific language governing
 // permissions and limitations under the License.
 
-using System;
-using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNet.Razor.Generator;
-using Microsoft.AspNet.Razor.Generator.Compiler;
 using Microsoft.AspNet.Razor.Generator.Compiler.CSharp;
-using Microsoft.AspNet.Razor.Parser.SyntaxTree;
 
 namespace Microsoft.AspNet.Mvc.Razor
 {
     public class MvcCSharpCodeBuilder : CSharpCodeBuilder
     {
-        private readonly List<InjectChunk> _injectChunks = new List<InjectChunk>();
-
-        public MvcCSharpCodeVisitor(CSharpCodeWriter writer, CodeGeneratorContext context) 
-            : base(writer, context)
+        public MvcCSharpCodeBuilder(CodeGeneratorContext context)
+            : base(context)
         {
-            
+
         }
 
-        public override void Accept(Chunk chunk)
+        protected override void BuildConstructor(CSharpCodeWriter writer)
         {
-            var injectChunk = chunk as InjectChunk;
-            if (injectChunk != null)
-            {
-                Visit(injectChunk);
-            }
-            base.Accept(chunk);
-        }
+            writer.WriteLineHiddenDirective();
+            var visitor = new MvcCSharpCodeVisitor(writer, Context);
+ 
+             writer.WriteLine();
+             visitor.Accept(Context.CodeTreeBuilder.CodeTree.Chunks);
+             writer.WriteLine();
+ 
+             writer.WriteLineHiddenDirective();
 
-        protected override void Visit(InjectChunk chunk)
-        {
-            _injectChunks.Add(chunk);
+             var arguments = visitor.InjectChunks.ToDictionary(c => c.TypeName, c => c.MemberName);
+             using (writer.BuildConstructor("public", Context.ClassName, arguments))
+             {
+                 foreach(var inject in visitor.InjectChunks)
+                 {
+                     writer.WriteStartAssignment("this." + inject.MemberName)
+                           .Write(inject.MemberName)
+                           .WriteLine(";");
+                 }
+             }
         }
     }
 }

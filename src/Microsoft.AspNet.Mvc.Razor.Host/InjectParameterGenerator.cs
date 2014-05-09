@@ -16,6 +16,8 @@
 // permissions and limitations under the License.
 
 using System;
+using System.Globalization;
+using Microsoft.AspNet.Mvc.Razor.Host;
 using Microsoft.AspNet.Razor.Generator;
 using Microsoft.AspNet.Razor.Parser.SyntaxTree;
 
@@ -23,33 +25,48 @@ namespace Microsoft.AspNet.Mvc.Razor
 {
     public class InjectParameterGenerator : SpanCodeGenerator
     {
-        public InjectParameterGenerator(string baseType)
+        public InjectParameterGenerator(string typeName, string propertyName)
         {
-            BaseType = baseType;
+            if (string.IsNullOrEmpty(typeName))
+            {
+                throw new ArgumentException(Resources.ArgumentCannotBeNullOrEmpty, "typeName");
+            }
+
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentException(Resources.ArgumentCannotBeNullOrEmpty, "propertyName");
+            }
+
+            TypeName = typeName;
+            PropertyName = propertyName;
         }
 
-        public string BaseType { get; private set; }
+        public string TypeName { get; private set; }
+        
+        public string PropertyName { get; private set; }
 
         public override void GenerateCode(Span target, CodeGeneratorContext context)
         {
-            context.CodeTreeBuilder.AddSetBaseTypeChunk(BaseType, target);
+            context.CodeTreeBuilder.AddChunk(new InjectChunk(TypeName, PropertyName), target);
         }
 
         public override string ToString()
         {
-            return "Base:" + BaseType;
+            return string.Format(CultureInfo.InvariantCulture, "@inject {0} {1}", TypeName, PropertyName);
         }
 
         public override bool Equals(object obj)
         {
-            SetBaseTypeCodeGenerator other = obj as SetBaseTypeCodeGenerator;
+            var other = obj as InjectParameterGenerator;
             return other != null &&
-                   String.Equals(BaseType, other.BaseType, StringComparison.Ordinal);
+                   string.Equals(TypeName, other.TypeName, StringComparison.Ordinal) &&
+                   string.Equals(PropertyName, other.TypeName, StringComparison.Ordinal);
         }
 
         public override int GetHashCode()
         {
-            return BaseType.GetHashCode();
+            return TypeName.GetHashCode() + 
+                   PropertyName.GetHashCode() * 13;
         }
     }
 }

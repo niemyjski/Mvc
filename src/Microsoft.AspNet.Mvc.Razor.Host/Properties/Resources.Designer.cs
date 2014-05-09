@@ -11,6 +11,22 @@ namespace Microsoft.AspNet.Mvc.Razor.Host
             = new ResourceManager("Microsoft.AspNet.Mvc.Razor.Host.Resources", typeof(Resources).GetTypeInfo().Assembly);
 
         /// <summary>
+        /// The value cannot be null or empty.
+        /// </summary>
+        internal static string ArgumentCannotBeNullOrEmpty
+        {
+            get { return GetString("ArgumentCannotBeNullOrEmpty"); }
+        }
+
+        /// <summary>
+        /// The value cannot be null or empty.
+        /// </summary>
+        internal static string FormatArgumentCannotBeNullOrEmpty()
+        {
+            return GetString("ArgumentCannotBeNullOrEmpty");
+        }
+
+        /// <summary>
         /// The 'inherits' keyword is not allowed when a '{0}' keyword is used.
         /// </summary>
         internal static string MvcRazorCodeParser_CannotHaveModelAndInheritsKeyword
@@ -24,6 +40,22 @@ namespace Microsoft.AspNet.Mvc.Razor.Host
         internal static string FormatMvcRazorCodeParser_CannotHaveModelAndInheritsKeyword(object p0)
         {
             return string.Format(CultureInfo.CurrentCulture, GetString("MvcRazorCodeParser_CannotHaveModelAndInheritsKeyword"), p0);
+        }
+
+        /// <summary>
+        /// A parameter named '{0} is already registered to be injected.
+        /// </summary>
+        internal static string MvcRazorCodeParser_InjectParameterAlreadyRegistered
+        {
+            get { return GetString("MvcRazorCodeParser_InjectParameterAlreadyRegistered"); }
+        }
+
+        /// <summary>
+        /// A parameter named '{0} is already registered to be injected.
+        /// </summary>
+        internal static string FormatMvcRazorCodeParser_InjectParameterAlreadyRegistered(object p0)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("MvcRazorCodeParser_InjectParameterAlreadyRegistered"), p0);
         }
 
         /// <summary>

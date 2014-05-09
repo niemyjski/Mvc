@@ -17,21 +17,28 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.AspNet.Mvc.Razor.Host;
 using Microsoft.AspNet.Razor.Generator;
 using Microsoft.AspNet.Razor.Generator.Compiler;
 using Microsoft.AspNet.Razor.Generator.Compiler.CSharp;
-using Microsoft.AspNet.Razor.Parser.SyntaxTree;
 
 namespace Microsoft.AspNet.Mvc.Razor
 {
-    public class MvcCSharpCodeVisitor : CSharpCodeVisitor
+    public class MvcCSharpCodeVisitor : CodeVisitor<CSharpCodeWriter>
     {
         private readonly List<InjectChunk> _injectChunks = new List<InjectChunk>();
 
-        public MvcCSharpCodeVisitor(CSharpCodeWriter writer, CodeGeneratorContext context) 
+        public MvcCSharpCodeVisitor(CSharpCodeWriter writer, CodeGeneratorContext context)
             : base(writer, context)
         {
-            
+
+        }
+
+        public List<InjectChunk> InjectChunks
+        {
+            get { return _injectChunks; }
         }
 
         public override void Accept(Chunk chunk)
@@ -44,8 +51,17 @@ namespace Microsoft.AspNet.Mvc.Razor
             base.Accept(chunk);
         }
 
-        protected override void Visit(InjectChunk chunk)
+        protected virtual void Visit(InjectChunk chunk)
         {
+            if (_injectChunks.Any(c => String.Equals(c.MemberName, chunk.MemberName, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new InvalidOperationException(Resources.FormatMvcRazorCodeParser_InjectParameterAlreadyRegistered(chunk.MemberName));
+            }
+
+            Writer.WriteLine(string.Format(CultureInfo.InvariantCulture,
+                                           "public {0} {1} {{ get; private set; }}",
+                                            chunk.TypeName,
+                                            chunk.MemberName));
             _injectChunks.Add(chunk);
         }
     }

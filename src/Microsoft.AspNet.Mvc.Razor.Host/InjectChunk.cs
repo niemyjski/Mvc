@@ -15,6 +15,8 @@
 // See the Apache 2 License for the specific language governing
 // permissions and limitations under the License.
 
+using System;
+using Microsoft.AspNet.Mvc.Razor.Host;
 using Microsoft.AspNet.Razor.Generator.Compiler;
 
 namespace Microsoft.AspNet.Mvc.Razor
@@ -25,12 +27,22 @@ namespace Microsoft.AspNet.Mvc.Razor
         /// Represents the chunk for an @inject statement.
         /// </summary>
         /// <param name="typeName">The type of object that would be injected</param>
-        /// <param name="memberName">The member name the field is exposed to the page as.</param>
-        public InjectChunk([NotNull] string typeName,
-                           [NotNull] string memberName)
+        /// <param name="propertyName">The member name the field is exposed to the page as.</param>
+        public InjectChunk(string typeName,
+                           string propertyName)
         {
+            if (string.IsNullOrEmpty(typeName))
+            {
+                throw new ArgumentException(Resources.ArgumentCannotBeNullOrEmpty, "typeName");
+            }
+
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentException(Resources.ArgumentCannotBeNullOrEmpty, "propertyName");
+            }
+
             TypeName = typeName;
-            MemberName = memberName;
+            MemberName = propertyName;
         }
 
         public string TypeName { get; private set; }

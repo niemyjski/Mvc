@@ -3,10 +3,12 @@
 
 using System;
 using System.Globalization;
+using Microsoft.AspNet.Mvc.Razor.Host;
 using Microsoft.AspNet.Razor.Generator;
 using Microsoft.AspNet.Razor.Parser;
+using Microsoft.AspNet.Razor.Parser.SyntaxTree;
 using Microsoft.AspNet.Razor.Text;
-using Microsoft.AspNet.Mvc.Razor.Host;
+using Microsoft.AspNet.Razor.Tokenizer.Symbols;
 
 namespace Microsoft.AspNet.Mvc.Razor
 {
@@ -73,9 +75,40 @@ namespace Microsoft.AspNet.Mvc.Razor
             AssertDirective(InjectKeyword);
             AcceptAndMoveNext();
 
-            var endModelLocation = CurrentLocation;
-            BaseTypeDirective(Resources.FormatMvcRazorCodeParser_ModelKeywordMustBeFollowedByTypeName(InjectKeyword),
-                             (type) => new InjectParameterGenerator(type));
+            var endLocation = CurrentLocation;
+            Context.CurrentBlock.Type = BlockType.Directive;
+
+            // Accept whitespace
+            var remainingWs = AcceptSingleWhiteSpaceCharacter();
+            Output(SpanKind.MetaCode);
+
+            if (remainingWs != null)
+            {
+                Accept(remainingWs);
+            }
+
+            remainingWs = AcceptSingleWhiteSpaceCharacter();
+            if (remainingWs != null)
+            {
+                Accept(remainingWs);
+            }
+            AcceptUntil(CSharpSymbolType.WhiteSpace);
+            var typeName = Span.GetContent();
+
+            // Parse to the end of the line
+            AcceptUntil(CSharpSymbolType.NewLine);
+            if (!Context.DesignTimeMode)
+            {
+                // We want the newline to be treated as code, but it causes issues at design-time.
+                Optional(CSharpSymbolType.NewLine);
+            }
+            var spanContent = Span.GetContent();
+            var propertyName = spanContent.Value.Substring(typeName.Value.Length)
+                                                    .Trim();
+
+            // Output the span and finish the block
+            Span.CodeGenerator = new InjectParameterGenerator(typeName, propertyName);
+            Output(SpanKind.Code);
 
         }
 
