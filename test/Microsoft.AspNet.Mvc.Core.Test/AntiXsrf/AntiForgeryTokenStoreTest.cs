@@ -40,7 +40,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             mockHttpContext
                 .Setup(o => o.Request.Cookies)
                 .Returns(requestCookies.Object);
-            var config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 CookieName = _cookieName
             };
@@ -62,7 +62,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             // Arrange
             var mockHttpContext = GetMockHttpContext(_cookieName, string.Empty);
 
-            var config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 CookieName = _cookieName
             };
@@ -83,7 +83,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
         {
             // Arrange
             var mockHttpContext = GetMockHttpContext(_cookieName, "invalid-value");
-            var config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 CookieName = _cookieName
             };
@@ -110,7 +110,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var expectedToken = new AntiForgeryToken();
             var mockHttpContext = GetMockHttpContext(_cookieName, "valid-value");
 
-            MockAntiForgeryConfig config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 CookieName = _cookieName
             };
@@ -144,7 +144,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             mockHttpContext.Setup(o => o.Request)
                            .Returns(requestContext.Object);
 
-            var config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 FormFieldName = "form-field-name"
             };
@@ -175,7 +175,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             mockHttpContext.Setup(o => o.Request)
                            .Returns(requestContext.Object);
 
-            var config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 FormFieldName = "form-field-name"
             };
@@ -213,7 +213,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             mockHttpContext.Setup(o => o.Request)
                            .Returns(requestContext.Object);
 
-            var config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 FormFieldName = "form-field-name"
             };
@@ -255,7 +255,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             mockSerializer.Setup(o => o.Serialize(token))
                           .Returns("serialized-value");
 
-            var config = new MockAntiForgeryConfig()
+            var config = new AntiForgeryConfig()
             {
                 CookieName = _cookieName,
                 RequireSSL = requireSsl
