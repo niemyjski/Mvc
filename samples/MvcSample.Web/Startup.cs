@@ -26,7 +26,7 @@ namespace MvcSample.Web
 {
     public class Startup
     {
-        public void Configuration(IBuilder app)
+        public void Configure(IBuilder app)
         {
             app.UseServices(services =>
             {
