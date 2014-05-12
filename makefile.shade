@@ -5,3 +5,38 @@ var AUTHORS='Microsoft'
 
 use-standard-lifecycle
 k-standard-goals
+
+#delete-common-package target="package"
+    @{
+        var buildDir = Path.Combine(Directory.GetCurrentDirectory(), "artifacts", "build");
+        var commonDir = Path.Combine(buildDir, "Common");
+        var commonPackages = Directory.EnumerateFiles(buildDir, "Common*.nupkg");
+        
+        if (Directory.Exists(commonDir))
+        {
+            TryDeleteAction(() => {
+                Directory.Delete(commonDir, recursive: true);
+            });
+        }
+        
+        foreach (var file in commonPackages)
+        {
+            TryDeleteAction(() => {
+               File.Delete(file); 
+            });
+        }
+        
+    }
+    
+functions @{
+    public void TryDeleteAction(Action action)
+    {
+        try
+        {
+            action();
+        } catch (IOException ex)
+        {
+            Log.Warn("Exception deleting. " + ex.Message);
+        }
+    }
+}
